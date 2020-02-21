@@ -13,20 +13,6 @@
 // 65 A ; 90 Z
 // 32 ' ' ; 122 z
 
-char* vigenereDecipher(char* cipherText, char* key) {
-    int temp;
-    char* clearText = malloc(sizeof(cipherText));
-    for (int i = 0 ; i < strlen(cipherText) ; i++) {
-      temp = (cipherText[i] - key[i%strlen(key)] + ALP_SIZE);
-      temp %= ALP_SIZE;
-      temp+=START;
-
-      clearText[i] = temp;
-    }
-
-    return clearText;
-}
-
 char* readFile() {
   FILE *fptr;
   char* c = malloc(sizeof(char)*10000);
@@ -40,10 +26,10 @@ char* readFile() {
   return c;
 }
 
-int getCharFreq(char* text, char chr) {
-    int result = 0;
+int* getCharFreq(char* text) {
+    int* result = malloc(sizeof(int)*256);
     for(int i = 0 ; i < strlen(text) ; i++) {
-        if(text[i] == chr) result++;
+        result[text[i]]++;
     }
     return result;
 }
@@ -78,6 +64,10 @@ int getMaxIndex(int *vec, int size) {
 //     printf("\n");
 // }
 
+char getMostFreqChar(char* text) {
+	return (char)(getMaxIndex(getCharFreq(text), 256));
+}
+
 char* decipher(char* text, int keySize, char mostCommomChar) {
     char* key = malloc(keySize*sizeof(char));
     
@@ -97,16 +87,13 @@ char* decipher(char* text, int keySize, char mostCommomChar) {
         }
     }
 
-    for(int i = 0 ; i < keySize ; i++) {
-        for(char k = START ; k < END ; k++) {
-            mostCommomCharFreq[i][k] = getCharFreq(vigenereDecipher(dividedText[i], &k), mostCommomChar);
-        }
-    }
 
-    for(int i = 0 ; i < keySize ; i++) {
-        key[i] = getMaxIndex(mostCommomCharFreq[i], 256);
-    }
-    key[keySize] = '\0';
+	for(int i = 0 ; i < keySize ; i++) {
+		key[i] = getMostFreqChar(dividedText[i]) - mostCommomChar + START;
+	}
+	
+	key[keySize] = '\0';
+
     return key;
 }
 
