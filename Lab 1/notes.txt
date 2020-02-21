@@ -1,7 +1,0 @@
-Desafio:
-    chave tem 4 letras
-    ' ' é o caracter mais frequente
-
-
-Problema atual:
-    decriptação não bete após mudar intervalo
