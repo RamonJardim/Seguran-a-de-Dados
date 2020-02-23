@@ -48,49 +48,22 @@ int getMaxIndex(int *vec, int size) {
     return maxIndex;
 }
 
-// Usadas para debug
-
-// void printVec(char* vec) {
-//     for(int i = 0 ; i < strlen(vec) ; i++) {
-//         printf("%c ", vec[i]);
-//     }
-//     printf("\n");
-// }
-
-// void printVecInt(int* vec, int size) {
-//     for(int i = 0 ; i < size ; i++) {
-//         printf("%d ", vec[i]);
-//     }
-//     printf("\n");
-// }
-
 char getMostFreqChar(char* text) {
-	return (char)(getMaxIndex(getCharFreq(text), 256));
+    return (char)(getMaxIndex(getCharFreq(text), 256));
 }
 
 char* decipher(char* text, int keySize, char mostCommomChar) {
     char* key = malloc(keySize*sizeof(char));
     
-    char dividedText[keySize][strlen(text)];
-    int* mostCommomCharFreq[keySize];
+    char* dividedText[keySize];
 
-    for(int i = 0 ; i < keySize ; i++) {
-        mostCommomCharFreq[i] = (int*)malloc(256*sizeof(int));
-        for(int j = 0 ; j < 256 ; j++)
-            mostCommomCharFreq[i][j] = 0;
-    }
-
-
-    for(int j = 0 ; j < keySize ;j++){
-        for(int i = 0 ; i < strlen(text) ; i++){
-            dividedText[j][i] = text[i*keySize+j];
+    for(int i = 0 ; i < keySize ;i++){
+        dividedText[i] = (char*)malloc(strlen(text)*sizeof(char));
+        for(int j = 0 ; j < strlen(text) ; j++){
+            dividedText[i][j] = text[j*keySize+i];
         }
+        key[i] = getMostFreqChar(dividedText[i]) - mostCommomChar + START;
     }
-
-
-	for(int i = 0 ; i < keySize ; i++) {
-		key[i] = getMostFreqChar(dividedText[i]) - mostCommomChar + START;
-	}
 	
 	key[keySize] = '\0';
 
